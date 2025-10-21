@@ -7,21 +7,20 @@ import calendar
 import plotly.express as px
 
 # ===============================
-# 🎨 Page Config
+# Page Config
 # ===============================
 st.set_page_config(
     page_title="Cost Predictor",
-    page_icon="💰",
     layout="wide"
 )
 
 # ===============================
-# 🌗 Theme Toggle
+# Theme Toggle
 # ===============================
 if "theme" not in st.session_state:
     st.session_state.theme = "light"
 
-toggle = st.toggle("🌙 Dark Mode", value=(st.session_state.theme == "dark"))
+toggle = st.toggle("Dark Mode", value=(st.session_state.theme == "dark"))
 st.session_state.theme = "dark" if toggle else "light"
 
 if st.session_state.theme == "dark":
@@ -34,13 +33,13 @@ if st.session_state.theme == "dark":
 else:
     bg_gradient = "linear-gradient(135deg, #fdfbfb, #ebedee)"
     text_color = "#2d3436"
-    card_bg = "rgba(255, 255, 255, 0.9)"
+    card_bg = "rgba(255, 255, 255, 0.95)"
     accent_color = "#6c5ce7"
     border_color = "rgba(0,0,0,0.1)"
     df_theme = "plotly_white"
 
 # ===============================
-# 🪄 Custom CSS
+# Custom CSS
 # ===============================
 st.markdown(f"""
 <style>
@@ -56,30 +55,31 @@ st.markdown(f"""
     font-family: 'Playfair Display', serif;
     text-align: center;
     color: {text_color};
-    font-size: 3.2rem;
+    font-size: 3rem;
     margin-top: -10px;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
 }}
 
 .subtitle {{
     font-family: 'Inter', sans-serif;
     text-align: center;
-    opacity: 0.8;
+    opacity: 0.85;
+    font-size: 1.2rem;
     margin-bottom: 2.5rem;
 }}
 
 .prediction-card {{
     background: {card_bg};
-    border-radius: 20px;
-    padding: 35px 25px;
+    border-radius: 25px;
+    padding: 30px 25px;
     border: 1px solid {border_color};
     text-align: center;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }}
 .prediction-card:hover {{
     transform: translateY(-5px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.2);
 }}
 
 .prediction-title {{
@@ -91,17 +91,17 @@ st.markdown(f"""
 
 .prediction-value {{
     font-weight: 700;
-    font-size: 3rem;
+    font-size: 2.8rem;
 }}
 
 .dataframe tbody tr:hover {{
-    background-color: rgba(108, 92, 231, 0.1) !important;
+    background-color: rgba(108, 92, 231, 0.05) !important;
 }}
 </style>
 """, unsafe_allow_html=True)
 
 # ===============================
-# ⚙️ Load Model & Scaler
+# Load Model & Scaler
 # ===============================
 @st.cache_resource
 def load_model_and_scaler():
@@ -116,7 +116,7 @@ def load_model_and_scaler():
         return None, None
 
 # ===============================
-# 📊 Load Dataset
+# Load Dataset
 # ===============================
 @st.cache_data
 def load_dataset():
@@ -154,10 +154,10 @@ def load_dataset():
         return None
 
 # ===============================
-# 🚀 Layout
+# App Layout
 # ===============================
 st.markdown('<h1 class="main-title">Cost Predictor</h1>', unsafe_allow_html=True)
-st.markdown('<p class="subtitle">Interactive dashboard to visualize and predict cost-of-living trends 🌆</p>', unsafe_allow_html=True)
+st.markdown('<p class="subtitle">Professional dashboard to visualize and predict cost-of-living trends</p>', unsafe_allow_html=True)
 
 model, scaler = load_model_and_scaler()
 df = load_dataset()
@@ -169,7 +169,6 @@ elif df is None:
 else:
     st.markdown("---")
     c1, c2 = st.columns([1, 1])
-
     with c1:
         year = st.slider(
             "Select Year",
@@ -184,10 +183,9 @@ else:
             options=[calendar.month_name[i] for i in range(1, 13)],
             value="January"
         )
-
     month_num = list(calendar.month_name).index(month)
 
-    # --- Extend data for future predictions ---
+    # --- Future Predictions ---
     cutoff_date = pd.to_datetime(f"{year}-{month_num}-01")
     last_real_year = int(df["Year"].max())
     future_rows = []
@@ -195,46 +193,39 @@ else:
     if year > last_real_year:
         for y in range(last_real_year + 1, year + 1):
             for m in range(1, 13):
-                if (y == year and m > month_num):
-                    break
+                if y == year and m > month_num: break
                 rural_input = np.array([[y, m, 1, 0]], dtype="float32")
                 urban_input = np.array([[y, m, 0, 1]], dtype="float32")
                 rural_pred = model.predict(scaler.transform(rural_input), verbose=0)[0][0]
                 urban_pred = model.predict(scaler.transform(urban_input), verbose=0)[0][0]
                 future_rows.append({
-                    "Year": y,
-                    "Month_Num": m,
-                    "Month": calendar.month_name[m],
+                    "Year": y, "Month_Num": m, "Month": calendar.month_name[m],
                     "Date": pd.to_datetime(f"{y}-{m}-01"),
-                    "Rural_Index": rural_pred,
-                    "Urban_Index": urban_pred
+                    "Rural_Index": rural_pred, "Urban_Index": urban_pred
                 })
         future_df = pd.DataFrame(future_rows)
         df_extended = pd.concat([df, future_df], ignore_index=True)
     else:
         df_extended = df.copy()
 
-    # --- Mark Real vs Predicted ---
     df_extended["Source"] = "Real"
     if year > last_real_year:
         df_extended.loc[df_extended["Year"] > last_real_year, "Source"] = "Predicted"
 
-    # --- Filter for selected date ---
     filtered_df = df_extended[df_extended["Date"] <= cutoff_date]
 
-    # --- Prepare prediction for selected month ---
+    # --- Prediction Cards ---
     rural_input = np.array([[year, month_num, 1, 0]], dtype="float32")
     urban_input = np.array([[year, month_num, 0, 1]], dtype="float32")
     rural_pred = model.predict(scaler.transform(rural_input), verbose=0)[0][0]
     urban_pred = model.predict(scaler.transform(urban_input), verbose=0)[0][0]
 
-    # --- Display Prediction Cards ---
     col1, col2 = st.columns(2)
     note = "<i style='color:#e17055'>(Predicted)</i>" if year > last_real_year else ""
     with col1:
         st.markdown(f"""
         <div class="prediction-card">
-            <div class="prediction-title">🏡 Rural Index</div>
+            <div class="prediction-title">Rural Index</div>
             <div class="prediction-value">{rural_pred:.2f}</div>
             {note}
         </div>
@@ -242,7 +233,7 @@ else:
     with col2:
         st.markdown(f"""
         <div class="prediction-card">
-            <div class="prediction-title">🏙️ Urban Index</div>
+            <div class="prediction-title">Urban Index</div>
             <div class="prediction-value">{urban_pred:.2f}</div>
             {note}
         </div>
@@ -250,29 +241,17 @@ else:
 
     st.markdown("---")
 
-    # ===============================
-    # 📈 Trend Visualization
-    # ===============================
-    st.subheader("📈 Historical & Predicted Trends")
-
+    # --- Trend Charts ---
+    st.subheader("Trends (Historical & Predicted)")
     numeric_cols = [c for c in df_extended.select_dtypes(include=[np.number]).columns if c not in ["Year", "Month_Num"]]
-    plot_config = {
-        "displayModeBar": True,
-        "displaylogo": False,
-        "scrollZoom": True,
-        "responsive": True
-    }
-
     chart_cols = st.columns(3)
+    plot_config = {"displayModeBar": True, "displaylogo": False, "scrollZoom": True, "responsive": True}
+
     for i, col in enumerate(numeric_cols[:3]):
         fig = px.line(
             filtered_df,
-            x="Date",
-            y=col,
-            color="Source",
-            line_dash="Source",
-            markers=True,
-            title=f"{col} Trend"
+            x="Date", y=col, color="Source", line_dash="Source",
+            markers=True, title=f"{col} Trend"
         )
         fig.update_layout(
             template=df_theme,
@@ -283,9 +262,7 @@ else:
         )
         chart_cols[i % 3].plotly_chart(fig, config=plot_config)
 
-    # ===============================
-    # 📊 Summary Statistics
-    # ===============================
-    st.subheader("📊 Summary Statistics")
+    # --- Summary Stats ---
+    st.subheader("Summary Statistics")
     summary_df = filtered_df.describe().T
     st.dataframe(summary_df.style.background_gradient(cmap="Purples"), use_container_width=True)
