@@ -381,7 +381,7 @@ else:
                 title = {'text': f"Rural Index{note}", 'font': {'size': 22, 'family': 'Playfair Display', 'color': text_color}},
                 number = {'font': {'size': 40, 'family': 'Lora', 'color': text_color}},
                 gauge = {
-                    'axis': {'range': [100, 300], 'tickwidth': 1, 'tickcolor': text_color},
+                    'axis': {'range': [100, 250], 'tickwidth': 1, 'tickcolor': text_color},
                     'bar': {'color': accent_color},
                     'bgcolor': "rgba(0,0,0,0)",
                     'borderwidth': 2,
@@ -418,7 +418,7 @@ else:
                 title = {'text': f"Urban Index{note}", 'font': {'size': 22, 'family': 'Playfair Display', 'color': text_color}},
                 number = {'font': {'size': 40, 'family': 'Lora', 'color': text_color}},
                 gauge = {
-                    'axis': {'range': [100, 300], 'tickwidth': 1, 'tickcolor': text_color},
+                    'axis': {'range': [100, 250], 'tickwidth': 1, 'tickcolor': text_color},
                     'bar': {'color': accent_color},
                     'bgcolor': "rgba(0,0,0,0)",
                     'borderwidth': 2,
