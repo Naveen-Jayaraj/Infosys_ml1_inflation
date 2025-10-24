@@ -54,8 +54,7 @@ else:
 # ===============================
 st.markdown(f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 .stApp {{
     background: {bg_gradient};
     color: {text_color};
@@ -64,7 +63,7 @@ st.markdown(f"""
 }}
 
 .main-title {{
-    font-family: 'Playfair Display', serif;
+    font-family: 'Playfair Display', serif !important;
     text-align: center;
     color: {text_color};
     font-size: 3rem;
@@ -388,7 +387,7 @@ else:
                     'bordercolor': border_color,
                     'steps': [
                         {'range': [100, 140], 'color': f"rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.2)"},
-                        {'range': [140, 170], 'color': f"rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.5)"}
+                        {'range': [140, 200], 'color': f"rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.5)"}
                     ],
                     'threshold': {
                         'line': {'color': "#e17055", 'width': 4},
@@ -425,7 +424,7 @@ else:
                     'bordercolor': border_color,
                     'steps': [
                         {'range': [100, 140], 'color': f"rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.2)"},
-                        {'range': [140, 170], 'color': f"rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.5)"}
+                        {'range': [140, 200], 'color': f"rgba({int(accent_color[1:3], 16)}, {int(accent_color[3:5], 16)}, {int(accent_color[5:7], 16)}, 0.5)"}
                     ],
                     'threshold': {
                         'line': {'color': "#e17055", 'width': 4},
