@@ -281,7 +281,7 @@ else:
         year = st.slider(
             "Select Year",
             min_value=int(df["Year"].min()),
-            max_value=2100,
+            max_value=2027,
             value=min(2025, int(df["Year"].max()) + 1), # Default to next year
             step=1,
             label_visibility="collapsed" # Hide default label
