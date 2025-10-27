@@ -146,7 +146,7 @@ http://localhost:8501
 ## Example Output
 
 <div align="center">
-  <img src="assets/dashboard_preview.png" width="800" alt="Dashboard Preview">
+  <img src="assets/dashboard.png" width="800" alt="Dashboard Preview">
 </div>
 
 Forecasts for both **Urban** and **Rural** indices are shown as interactive charts with statistical overlays.
